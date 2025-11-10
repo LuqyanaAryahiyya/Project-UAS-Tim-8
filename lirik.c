@@ -13,3 +13,18 @@ int main() {
     output = fopen("kosa-kata.txt", "w");
     
     if (!input || !output) {
+        printf("File tidak ditemukan.\n");
+        return 1;
+    }
+
+    //Membaca judul
+    fgets(line, sizeof(line), input);  
+    fprintf(output, "%s", line);  
+
+    while (fgets(line, sizeof(line), input)) {
+        int i = 0, j = 0;
+
+        while (line[i] != '\0') {
+            char c = tolower(line[i]);
+
+            //Menyimpan huruf dan tanda '
