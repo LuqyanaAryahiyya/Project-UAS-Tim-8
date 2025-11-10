@@ -1,0 +1,194 @@
+// Deklarasi fungsi ADMIN
+// 1. Fungsi untuk Tampil Alat
+void tampilAlat() {
+    // Program membuka 1 file:
+    FILE *fpointer = fopen("alat.txt", "r");
+
+     // Pengecekan error file
+    if (!fpointer) {
+        printf("Data alat tidak ditemukan.\n");
+        return;
+    }
+
+    Alat alat;
+    garis();
+    printf("%-5s %-20s %-15s %-10s %-10s %-10s\n",
+           "ID", "Nama", "Merek", "Model", "Tahun", "Jumlah");
+    garis();
+
+    // Membaca file alat.txt baris demi baris
+    while (fscanf(fpointer, "%u|%49[^|]|%49[^|]|%49[^|]|%u|%u\n",
+                  &alat.id_alat, alat.nama_alat, alat.merek_alat,
+                  alat.model_alat, &alat.tahun_produksi, &alat.jumlah_unit) == 6) {
+        // Cetak setiap baris alat ke layar
+        printf("%-5u %-20s %-15s %-10s %-10u %-10u\n",
+               alat.id_alat, alat.nama_alat, alat.merek_alat,
+               alat.model_alat, alat.tahun_produksi, alat.jumlah_unit);
+    }
+    garis();
+    fclose(fpointer);
+}
+
+// 2. Fungsi untuk Tambah Alat
+void tambahAlat() {
+    // Program membuka 1 file:
+    FILE *fpointer = fopen("alat.txt", "a");
+
+    // Pengecekan error file
+    if (!fpointer) { 
+        printf("Gagal membuka file alat.txt\n");
+        return; 
+    }
+
+    Alat alat;
+    // Input ID Alat
+    printf("Masukkan ID Alat: ");
+    scanf("%u", &alat.id_alat);
+    getchar();
+
+    // Input Nama Alat
+    printf("Masukkan Nama Alat: ");
+    fgets(alat.nama_alat, sizeof(alat.nama_alat), stdin);
+    alat.nama_alat[strcspn(alat.nama_alat, "\n")] = '\0';
+
+    // Input Merek Alat
+    printf("Masukkan Merek Alat: ");
+    fgets(alat.merek_alat, sizeof(alat.merek_alat), stdin);
+    alat.merek_alat[strcspn(alat.merek_alat, "\n")] = '\0';
+
+    // Input Model Alat
+    printf("Masukkan Model Alat: ");
+    fgets(alat.model_alat, sizeof(alat.model_alat), stdin);
+    alat.model_alat[strcspn(alat.model_alat, "\n")] = '\0';
+
+    // Input Tahun Produksi dan Jumlah Unit
+    printf("Masukkan Tahun Produksi: ");
+    scanf("%u", &alat.tahun_produksi);
+    printf("Masukkan Jumlah Unit: ");
+    scanf("%u", &alat.jumlah_unit);
+
+    // Menulis ke file
+    fprintf(fpointer, "%u|%s|%s|%s|%u|%u\n",
+            alat.id_alat, alat.nama_alat, alat.merek_alat, alat.model_alat,
+            alat.tahun_produksi, alat.jumlah_unit);
+    fclose(fpointer);
+
+    printf("Data alat berhasil ditambahkan!\n");
+}
+
+// 3. Fungsi untuk Edit Alat
+void editAlat() {
+    // Program membuka 2 file:
+    FILE *fpointer = fopen("alat.txt", "r");
+    FILE *temp = fopen("temp.txt", "w");
+
+    // Pengecekan error file (kalau salah satu file tidak bisa dibuka)
+    if (!fpointer || !temp) {
+        printf("Gagal membuka file!\n");
+        return;
+    }
+
+    Alat alat; // Variabel dari struct Alat, menyimpan satu baris data alat yang dibaca dari file
+    unsigned int id; // Variabel untuk menyimpan ID alat yang mau diedit
+    int found = 0; // Variabel untuk menandai apakah ID yang dicari ditemukan
+
+    // Input ID alat yang ingin diedit
+    printf("Masukkan ID alat yang ingin diedit: ");
+    scanf("%u", &id);
+
+    // Membaca file alat.txt baris demi baris
+    while (fscanf(fpointer, "%u|%49[^|]|%49[^|]|%49[^|]|%u|%u\n",
+                  &alat.id_alat, alat.nama_alat, alat.merek_alat,
+                  alat.model_alat, &alat.tahun_produksi, &alat.jumlah_unit) == 6) {
+        // Proses pengeditan
+        if (alat.id_alat == id) {
+            found = 1;
+
+            // Input Nama Baru Alat
+            printf("Masukkan Nama Baru Alat: "); getchar();
+            fgets(alat.nama_alat, sizeof(alat.nama_alat), stdin);
+            alat.nama_alat[strcspn(alat.nama_alat, "\n")] = '\0';
+
+            // Input Merek Baru Alat
+            printf("Masukkan Merek Baru Alat: "); 
+            fgets(alat.merek_alat, sizeof(alat.merek_alat), stdin);
+            alat.merek_alat[strcspn(alat.merek_alat, "\n")] = '\0';
+
+            // Input Model Baru Alat
+            printf("Masukkan Model Baru Alat: "); 
+            fgets(alat.model_alat, sizeof(alat.model_alat), stdin);
+            alat.model_alat[strcspn(alat.model_alat, "\n")] = '\0';
+
+            // Input Tahun Produkai baru 
+            printf("Masukkan Tahun Produksi Alat: "); 
+            scanf("%u", &alat.tahun_produksi);
+
+            // Input Jumlah Unit baru
+            printf("Masukkan Jumlah Unit: "); 
+            scanf("%u", &alat.jumlah_unit);
+        }
+        // Menulis ulang ke file temp.txt (baik yang diubah maupun tidak)
+        fprintf(temp, "%u|%s|%s|%s|%u|%u\n",
+                alat.id_alat, alat.nama_alat, alat.merek_alat,
+                alat.model_alat, alat.tahun_produksi, alat.jumlah_unit);
+    }
+
+    // Setelah semua data selesai dibaca:
+    fclose(fpointer);
+    fclose(temp);
+    remove("alat.txt");
+    rename("temp.txt", "alat.txt");
+
+    // Mengecek apakah variabel found bernilai 1 (benar) atau bernilai 0 (salah)
+    if (found)
+        printf("Data alat berhasil diubah!\n");
+    else
+        printf("ID alat tidak ditemukan.\n");
+}
+
+// 4. Fungsi untuk Hapus Alat
+void hapusAlat() {
+    // // Program membuka 2 file:
+    FILE *fpointer = fopen("alat.txt", "r");
+    FILE *temp = fopen("temp.txt", "w");
+
+    // Pengecekan error file (kalau salah satu file tidak bisa dibuka)
+    if (!fpointer || !temp) {
+        printf("Gagal membuka file!\n");
+        return;
+    }
+
+    Alat alat; // Variabel dari struct Alat, menyimpan satu baris data alat yang dibaca dari file
+    unsigned int id; // Variabel untuk menyimpan ID alat yang mau dihapus
+    int found = 0; // Variabel untuk menandai apakah ID yang dicari ditemukan
+
+    // Input ID
+    printf("Masukkan ID alat yang akan dihapus: ");
+    scanf("%u", &id);
+
+    // Membaca file alat.txt baris demi baris
+    while (fscanf(fpointer, "%u|%49[^|]|%49[^|]|%49[^|]|%u|%u\n",
+                  &alat.id_alat, alat.nama_alat, alat.merek_alat,
+                  alat.model_alat, &alat.tahun_produksi, &alat.jumlah_unit) == 6) {
+        // Bandingkan ID
+        if (alat.id_alat != id) {
+            fprintf(temp, "%u|%s|%s|%s|%u|%u\n",
+                    alat.id_alat, alat.nama_alat, alat.merek_alat,
+                    alat.model_alat, alat.tahun_produksi, alat.jumlah_unit);
+        } else {
+            found = 1;
+        }
+    }
+
+    // Setelah semua data selesai dibaca:
+    fclose(fpointer);
+    fclose(temp);
+    remove("alat.txt");
+    rename("temp.txt", "alat.txt");
+
+    // Mengecek apakah variabel found bernilai 1 (benar) atau bernilai 0 (salah)
+    if (found)
+        printf("Data alat berhasil dihapus!\n");
+    else
+        printf("ID alat tidak ditemukan.\n");
+}
