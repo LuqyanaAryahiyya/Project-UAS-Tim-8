@@ -12,7 +12,7 @@ int main() {
     input = fopen("lirik.txt", "r");
     output = fopen("kosa-kata.txt", "w");
     
-    if (!input || !output) {
+    if (input == NULL || output == NULL) {
         printf("File tidak ditemukan.\n");
         return 1;
     }
@@ -59,3 +59,4 @@ int main() {
     printf("File kosa-kata.txt berhasil dibuat!\n");
     return 0;
 }
+
