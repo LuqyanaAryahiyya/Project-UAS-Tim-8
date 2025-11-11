@@ -4,43 +4,45 @@
 
 int main() {
     FILE *input, *output;
-    char word[100], line[200];
-    char words[1000][100];
-    int count = 0, found;
+    char kata[100], baris[200], kosaKata[1000][100];
+    int n = 0, cari;
 
-    //Membuka file lirik dan file kosa-kata
-    input = fopen("lirik.txt", "r");
-    output = fopen("kosa-kata.txt", "w");
+    //Membuka file lirik dan kosa-kata
+    input = fopen("lirik.txt", "r");        
+    output = fopen("kosa-kata.txt", "w");   
     
-    if (input == NULL || output == NULL) {
+    if (input == NULL|| output == NULL) {
         printf("File tidak ditemukan.\n");
-        return 1;
+        return 0;
     }
 
-    //Membaca judul
-    fgets(line, sizeof(line), input);  
-    fprintf(output, "%s", line);  
+    fgets(baris, sizeof(baris), input);     
+    fprintf(output, "%s", baris);  
 
-    while (fgets(line, sizeof(line), input)) {
+    while (fgets(baris, sizeof(baris), input)) {
         int i = 0, j = 0;
 
-        while (line[i] != '\0') {
-            char c = tolower(line[i]);
-            //Menyimpan huruf dan tanda '
-            if (isalpha(c) || c == '\'') {
-                word[j++] = c;
-            } else if (j > 0) {
-                word[j] = '\0';
+        //Menyimpan huruf dan tanda '
+        while (baris[i] != '\0') {
+            char c = tolower(baris[i]);
+            if ((c >= 'a' && c <= 'z') || c == '\'') {      
+                kata[j] = c;
+                j++;
+            } 
+            else if (j > 0) {
+                kata[j] = '\0';
+                cari = 0;
+
                 //Mengecek kata yang sudah pernah muncul
-                found = 0;
-                for (int k = 0; k < count; k++) {
-                    if (strcmp(words[k], word) == 0) {
-                        found = 1;
+                for (int k = 0; k < n; k++) {              
+                    if (strcmp(kosaKata[k], kata) == 0) {
+                        cari = 1;
                         break;
                     }
                 }
-                if (!found) {
-                    strcpy(words[count++], word);
+                if (cari == 0) {
+                    strcpy(kosaKata[n], kata);
+                    n++;
                 }
                 j = 0;
             }
@@ -49,14 +51,13 @@ int main() {
     }
 
     //Menulis daftar kata ke file output
-    for (int k = 0; k < count; k++) {
-        fprintf(output, "%s=\n", words[k]);
+    for (int i = 0; i < n; i++) {               
+        fprintf(output, "%s=\n", kosaKata[i]);
     }
 
-    //Menutup file lirik dan file kosa-kata
-    fclose(input);
-    fclose(output);
-    printf("File kosa-kata.txt berhasil dibuat!\n");
+    //Menutup file lirik dan kosa-kata
+    fclose(input);          
+    fclose(output);         
+    printf("Program berhasil, silahkan cek file kosa-kata.txt\n");
     return 0;
 }
-
