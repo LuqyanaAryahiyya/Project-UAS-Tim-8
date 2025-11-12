@@ -4,7 +4,7 @@
 
 int main() {
     FILE *input, *output;
-    char kata[100], baris[200], kosaKata[1000][100];
+    char data[100], baris[200], kosaKata[1000][100];
     int n = 0, cari;
 
     //Membuka file lirik dan kosa-kata
@@ -26,22 +26,22 @@ int main() {
         while (baris[i] != '\0') {
             char c = tolower(baris[i]);
             if ((c >= 'a' && c <= 'z') || c == '\'') {      
-                kata[j] = c;
+                data[j] = c;
                 j++;
             } 
             else if (j > 0) {
-                kata[j] = '\0';
+                data[j] = '\0';
                 cari = 0;
 
                 //Mengecek kata yang sudah pernah muncul
                 for (int k = 0; k < n; k++) {              
-                    if (strcmp(kosaKata[k], kata) == 0) {
+                    if (strcmp(kosaKata[k], data) == 0) {
                         cari = 1;
                         break;
                     }
                 }
                 if (cari == 0) {
-                    strcpy(kosaKata[n], kata);
+                    strcpy(kosaKata[n], data);
                     n++;
                 }
                 j = 0;
@@ -61,3 +61,4 @@ int main() {
     printf("Program berhasil, silahkan cek file kosa-kata.txt\n");
     return 0;
 }
+
